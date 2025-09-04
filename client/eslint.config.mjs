@@ -72,6 +72,8 @@ export default defineConfig([
           Object.entries(globals.browser).map(([key]) => [key, "off"]),
         ),
         ...globals.node,
+        ...globals.browser,
+        ...globals.es2021,
       },
 
       parser: tsParser,
