@@ -49,9 +49,11 @@ export default defineConfig([
     extends: fixupConfigRules(
       compat.extends(
         "plugin:react/recommended",
-        "plugin:prettier/recommended",
         "plugin:react-hooks/recommended",
         "plugin:jsx-a11y/recommended",
+        "eslint:recommended",
+        "plugin:react/recommended",
+        "plugin:prettier/recommended",
       ),
     ),
 
@@ -89,10 +91,10 @@ export default defineConfig([
       },
     },
 
-
     files: ["**/*.ts", "**/*.tsx"],
 
     rules: {
+      "prettier/prettier": "error",
       "no-console": "warn",
       "react/prop-types": "off",
       "react/jsx-uses-react": "off",
@@ -136,7 +138,7 @@ export default defineConfig([
             },
           ],
 
-          "newlines-between": "always",
+          "newlines-between": "never",
         },
       ],
 
@@ -151,19 +153,21 @@ export default defineConfig([
           reservedFirst: true,
         },
       ],
-
       "padding-line-between-statements": [
         "warn",
+        // Always blank line before return
         {
           blankLine: "always",
           prev: "*",
           next: "return",
         },
+        // Always blank line after variable declarations
         {
           blankLine: "always",
           prev: ["const", "let", "var"],
           next: "*",
         },
+        // Allow consecutive variable declarations without extra lines
         {
           blankLine: "any",
           prev: ["const", "let", "var"],
