@@ -1,6 +1,5 @@
 import { Module } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
-import { Pool } from "pg";
 import { drizzle, NodePgDatabase } from "drizzle-orm/node-postgres";
 
 export const DrizzleDB = Symbol("drizzle-connection");
@@ -13,10 +12,11 @@ import * as schema from "./schema";
       provide: DrizzleDB,
       inject: [ConfigService],
       useFactory: () => {
-        const pool = new Pool({
-          connectionString: process.env.DATABASE_URL!,
-        });
-        return drizzle(pool, { schema }) as NodePgDatabase<typeof schema>;
+        return drizzle({
+          connection: process.env.DATABASE_URL!,
+          schema: schema,
+          casing: "snake_case",
+        }) as NodePgDatabase<typeof schema>;
       },
     },
   ],

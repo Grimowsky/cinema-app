@@ -10,11 +10,7 @@ const pool = new Pool({
 
 const db = drizzle(pool, { schema }) as DrizzleSchema;
 
-async function main() {
-  await db.insert(schema.usersTable).values({
-    name: "john",
-  });
-}
+async function main() {}
 
 main()
   .then()
