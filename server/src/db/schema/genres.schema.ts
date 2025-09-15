@@ -10,6 +10,8 @@ export const genreEnum = pgEnum("genre", [
   "Sci-Fi",
 ]);
 
+export type Genre = (typeof genreEnum.enumValues)[number];
+
 export const genreSchema = pgTable("genres", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
   genre: genreEnum().notNull(),
