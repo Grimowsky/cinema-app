@@ -1,20 +1,10 @@
 import { relations } from "drizzle-orm";
-import { pgTable, integer, primaryKey, pgEnum } from "drizzle-orm/pg-core";
+import { pgTable, integer, primaryKey, text } from "drizzle-orm/pg-core";
 import { moviesSchema } from "./movies.schema";
-
-export const genreEnum = pgEnum("genre", [
-  "Action",
-  "Comedy",
-  "Drama",
-  "Horror",
-  "Sci-Fi",
-]);
-
-export type Genre = (typeof genreEnum.enumValues)[number];
 
 export const genreSchema = pgTable("genres", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
-  genre: genreEnum().notNull(),
+  genre: text().notNull(),
 });
 
 export const genreRelations = relations(genreSchema, ({ many }) => ({
@@ -24,10 +14,10 @@ export const genreRelations = relations(genreSchema, ({ many }) => ({
 export const genresToMovies = pgTable(
   "genres_to_movies",
   {
-    movieId: integer()
+    movieId: integer("movie_id")
       .notNull()
       .references(() => moviesSchema.id),
-    genreId: integer()
+    genreId: integer("genre_id")
       .notNull()
       .references(() => genreSchema.id),
   },

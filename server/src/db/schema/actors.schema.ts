@@ -15,10 +15,10 @@ export const actorsRelations = relations(actorsSchema, ({ many }) => ({
 export const actorsToMovies = pgTable(
   "actors_to_movies",
   {
-    movieId: integer()
+    movieId: integer("movie_id")
       .notNull()
       .references(() => moviesSchema.id),
-    actorId: integer()
+    actorId: integer("actor_id")
       .notNull()
       .references(() => actorsSchema.id),
   },

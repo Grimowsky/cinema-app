@@ -4,20 +4,33 @@ import "dotenv/config";
 import { DrizzleSchema } from "./types/drizzle.type";
 import * as schema from "./schema";
 import { seed, reset } from "drizzle-seed";
-import { faker } from "@faker-js/faker";
-import { Genre } from "./schema";
+import { getMovies, imdbSelectors } from "./imdb";
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   user: "postgres",
 });
 
-const genres = ["Action", "Comedy", "Drama", "Horror", "Sci-Fi"] as const;
-
 const db = drizzle(pool, { schema }) as DrizzleSchema;
 
 async function main() {
   await reset(db, schema);
+
+  //get movies
+  console.log("@@ getting movies from imdb db");
+
+  const movies = await getMovies();
+
+  console.log("@@@", movies.length);
+
+  const genres = imdbSelectors.getGenres(movies);
+  const titles = imdbSelectors.getTitles(movies);
+  const ratings = imdbSelectors.getRating(movies.length);
+  const descriptions = imdbSelectors.getDescription(movies);
+  const runtime = imdbSelectors.getRuntime(movies.length);
+  const premiere = imdbSelectors.premiereDate(movies.length);
+
+  console.log("✅ data from imdb completed!");
 
   await seed(db, schema).refine((f) => ({
     directorsSchema: {
@@ -30,14 +43,26 @@ async function main() {
       columns: {
         genre: f.valuesFromArray({ values: [...genres], isUnique: true }),
       },
-      count: 5,
+      count: genres.length,
     },
     moviesSchema: {
-      title: faker.commerce.productName(),
-      description: faker.lorem.paragraph(),
-      durationMins: faker.number.int({ min: 80, max: 200 }),
-      rating: faker.number.int({ min: 1, max: 10 }),
-      premiereDate: faker.date.past({ years: 20 }),
+      columns: {
+        title: f.valuesFromArray({ values: [...titles], isUnique: true }),
+        description: f.valuesFromArray({
+          values: [...descriptions],
+          isUnique: true,
+        }),
+        rating: f.valuesFromArray({ values: [...ratings] }),
+        durationSeconds: f.valuesFromArray({ values: [...runtime] }),
+        premiereDate: f.valuesFromArray({ values: [...premiere] }),
+      },
+      count: movies.length,
+    },
+    genresToMovies: {
+      count: 50,
+    },
+    actorsToMovies: {
+      count: 100,
     },
   }));
 
