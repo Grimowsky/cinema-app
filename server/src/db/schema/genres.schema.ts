@@ -8,7 +8,7 @@ export const genreSchema = pgTable("genres", {
 });
 
 export const genreRelations = relations(genreSchema, ({ many }) => ({
-  genreToMovies: many(genresToMovies),
+  genresToMovies: many(genresToMovies),
 }));
 
 export const genresToMovies = pgTable(
@@ -23,3 +23,14 @@ export const genresToMovies = pgTable(
   },
   (t) => [primaryKey({ columns: [t.movieId, t.genreId] })],
 );
+
+export const genresToMoviesRelations = relations(genresToMovies, ({ one }) => ({
+  movie: one(moviesSchema, {
+    fields: [genresToMovies.movieId],
+    references: [moviesSchema.id],
+  }),
+  genre: one(genreSchema, {
+    fields: [genresToMovies.genreId],
+    references: [genreSchema.id],
+  }),
+}));

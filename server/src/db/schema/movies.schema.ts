@@ -1,7 +1,7 @@
-import { text, real, integer, pgTable, date } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
-import { directorsSchema } from "./directors.schema";
+import { date, integer, pgTable, real, text } from "drizzle-orm/pg-core";
 import { actorsToMovies } from "./actors.schema";
+import { directorsSchema } from "./directors.schema";
 import { genresToMovies } from "./genres.schema";
 
 export const moviesSchema = pgTable("movies", {
@@ -18,6 +18,6 @@ export const moviesSchema = pgTable("movies", {
 
 export const moviesRelations = relations(moviesSchema, ({ one, many }) => ({
   director: one(directorsSchema),
-  genresToMovie: many(genresToMovies),
   cast: many(actorsToMovies),
+  genresToMovies: many(genresToMovies),
 }));
