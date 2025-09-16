@@ -1,4 +1,7 @@
 {
+  "dependencies": {
+    "@nestjs/mapped-types": "*"
+  },
   "name": "react-nest-ts-monorepo",
   "version": "1.0.0",
   "description": "reactJS boilerplate with nestJS",
