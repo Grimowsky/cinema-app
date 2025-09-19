@@ -9,5 +9,5 @@ export const directorsSchema = pgTable("directors", {
 });
 
 export const directorsRelations = relations(directorsSchema, ({ many }) => ({
-  movies: many(moviesSchema),
+  movies: many(moviesSchema, { relationName: "movies_director" }),
 }));

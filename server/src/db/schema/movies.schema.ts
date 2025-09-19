@@ -11,13 +11,15 @@ export const moviesSchema = pgTable("movies", {
   durationSeconds: integer("duration_seconds").notNull(),
   premiereDate: date("premiere_date").notNull(),
   rating: real().notNull(),
-  directorId: integer("director_id")
-    .references(() => directorsSchema.id)
-    .notNull(),
+  directorId: integer().notNull(),
 });
 
 export const moviesRelations = relations(moviesSchema, ({ one, many }) => ({
-  director: one(directorsSchema),
+  director: one(directorsSchema, {
+    relationName: "movies_director",
+    fields: [moviesSchema.directorId],
+    references: [directorsSchema.id],
+  }),
   cast: many(actorsToMovies),
   genresToMovies: many(genresToMovies),
 }));
