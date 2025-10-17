@@ -20,6 +20,11 @@ export class MoviesService {
             genre: true,
           },
         },
+        cast: {
+          with: {
+            actor: true,
+          },
+        },
       },
     });
 

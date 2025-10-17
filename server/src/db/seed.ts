@@ -58,13 +58,27 @@ async function main() {
       },
       count: movies.length,
     },
-    genresToMovies: {
-      count: 50,
-    },
     actorsToMovies: {
       count: 100,
     },
   }));
+
+  const moviesfromDb = await db.select().from(schema.moviesSchema);
+  const genresFromDb = await db.select().from(schema.genreSchema);
+  const genresIds = genresFromDb.map((g) => g.id);
+
+  const genresToMoviesSeeds = moviesfromDb.map((movie) => {
+    return {
+      movieId: Number(movie.id),
+      genreId: genresIds[2],
+    };
+  });
+
+  console.log("@@@", genresToMoviesSeeds);
+
+  console.log("@@ seeding genres to movies relations");
+
+  await db.insert(schema.genresToMovies).values(genresToMoviesSeeds);
 
   console.log("✅ Seed completed!");
 }
